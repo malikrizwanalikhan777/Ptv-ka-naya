@@ -22,7 +22,9 @@ jobs:
           distribution: 'temurin'
 
       - name: Build APK
-        run: ./gradlew :app:assembleDebug
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug
 
       - name: Prepare Distribution
         run: |
