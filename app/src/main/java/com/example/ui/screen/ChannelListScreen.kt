@@ -30,13 +30,12 @@ fun ChannelListScreen(viewModel: ChannelViewModel, onStreamClick: (String) -> Un
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = androidx.compose.ui.graphics.Color(0xFF87CEEB))
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .background(color = androidx.compose.ui.graphics.Color(0xFF87CEEB)),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "PTV Sports Live TV", style = MaterialTheme.typography.headlineSmall, color = androidx.compose.ui.graphics.Color.White)
-            Button(onClick = { viewModel.fetchChannels() }) {
+            Text(text = "PTV Sports Live TV", style = MaterialTheme.typography.headlineSmall, color = androidx.compose.ui.graphics.Color.White, modifier = Modifier.padding(16.dp))
+            Button(onClick = { viewModel.fetchChannels() }, modifier = Modifier.padding(16.dp)) {
                 Text("Refresh")
             }
         }
@@ -48,18 +47,26 @@ fun ChannelListScreen(viewModel: ChannelViewModel, onStreamClick: (String) -> Un
         } else {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(4),
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(8.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(channels) { channel ->
                     Card(
                         modifier = Modifier
-                            .padding(8.dp)
+                            .padding(4.dp)
                             .fillMaxWidth()
-                            .height(150.dp),
-                        onClick = { selectedChannel = channel }
+                            .height(120.dp),
+                        onClick = {
+                            if (channel.streams.size == 1) {
+                                onStreamClick(channel.streams[0].url)
+                            } else {
+                                selectedChannel = channel
+                            }
+                        }
                     ) {
-                        Text(text = channel.name, modifier = Modifier.padding(16.dp))
+                        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                            Text(text = channel.name, modifier = Modifier.padding(8.dp))
+                        }
                     }
                 }
             }
@@ -71,22 +78,26 @@ fun ChannelListScreen(viewModel: ChannelViewModel, onStreamClick: (String) -> Un
             onDismissRequest = { selectedChannel = null }
         ) {
             Surface(
-                modifier = Modifier.fillMaxWidth(0.9f).fillMaxHeight(0.8f),
+                modifier = Modifier.fillMaxWidth(0.9f).wrapContentHeight(),
                 shape = MaterialTheme.shapes.medium
             ) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(4),
-                    contentPadding = PaddingValues(16.dp)
-                ) {
-                    items(channel.streams) { stream ->
-                        Button(
-                            onClick = {
-                                selectedChannel = null 
-                                onStreamClick(stream.url)
-                            },
-                            modifier = Modifier.padding(8.dp).fillMaxWidth()
-                        ) {
-                            Text(text = stream.name)
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "Select Stream", style = MaterialTheme.typography.titleLarge)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.fillMaxWidth().heightIn(max = 300.dp)
+                    ) {
+                        items(channel.streams) { stream ->
+                            Button(
+                                onClick = {
+                                    selectedChannel = null 
+                                    onStreamClick(stream.url)
+                                },
+                                modifier = Modifier.padding(4.dp).fillMaxWidth()
+                            ) {
+                                Text(text = stream.name)
+                            }
                         }
                     }
                 }
