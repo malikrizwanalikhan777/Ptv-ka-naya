@@ -81,9 +81,8 @@ fun ChannelListScreen(viewModel: ChannelViewModel, onStreamClick: (String) -> Un
                     items(channel.streams) { stream ->
                         Button(
                             onClick = {
-                                val url = stream.url
                                 selectedChannel = null 
-                                onStreamClick(url)
+                                onStreamClick(stream.url)
                             },
                             modifier = Modifier.padding(8.dp).fillMaxWidth()
                         ) {
