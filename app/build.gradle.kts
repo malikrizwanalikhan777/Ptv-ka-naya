@@ -50,8 +50,8 @@ android {
       signingConfig = signingConfigs.getByName("release")
     }
     debug {
-      // Allow build without debug.keystore in CI
-      signingConfig = null
+      // Restore signingConfig for debug build.
+      signingConfig = signingConfigs.getByName("debugConfig")
     }
   }
   compileOptions {
