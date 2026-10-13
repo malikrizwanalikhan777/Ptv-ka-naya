@@ -1,0 +1,36 @@
+name: Publish APK
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apk-distribution/app-debug.apk'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate APK
+        run: |
+          if [ ! -f "apk-distribution/app-debug.apk" ]; then echo "APK not found"; exit 1; fi
+          if [ ! -f "apk-distribution/app-debug.apk.sha256" ]; then echo "Checksum not found"; exit 1; fi
+          echo "$(cat apk-distribution/app-debug.apk.sha256 | cut -d' ' -f1)  apk-distribution/app-debug.apk" | sha256sum -c -
+          unzip -tq apk-distribution/app-debug.apk
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="debug-apk-build-${{ github.run_number }}-${{ github.run_attempt }}"
+          gh release create "$TAG" \
+            apk-distribution/app-debug.apk \
+            apk-distribution/app-debug.apk.sha256 \
+            --title "Debug APK Build $TAG" \
+            --notes "Automatically published debug APK."

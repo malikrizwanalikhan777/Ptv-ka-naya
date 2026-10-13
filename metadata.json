@@ -1,0 +1,6 @@
+{
+  "name": "PTV Sports Live TV App",
+  "description": "A live sports television application for watching PTV Sports and other channels.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
