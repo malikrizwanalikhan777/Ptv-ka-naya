@@ -1,28 +1,34 @@
-name: Publish APK
+name: Build and Publish APK
 
 on:
   push:
     branches:
       - main
-    paths:
-      - 'apk-distribution/app-debug.apk'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate APK
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build APK
+        run: ./gradlew :app:assembleDebug
+
+      - name: Prepare Distribution
         run: |
-          if [ ! -f "apk-distribution/app-debug.apk" ]; then echo "APK not found"; exit 1; fi
-          if [ ! -f "apk-distribution/app-debug.apk.sha256" ]; then echo "Checksum not found"; exit 1; fi
-          echo "$(cat apk-distribution/app-debug.apk.sha256 | cut -d' ' -f1)  apk-distribution/app-debug.apk" | sha256sum -c -
-          unzip -tq apk-distribution/app-debug.apk
+          mkdir -p apk-distribution
+          cp app/build/outputs/apk/debug/app-debug.apk apk-distribution/app-debug.apk
+          sha256sum apk-distribution/app-debug.apk > apk-distribution/app-debug.apk.sha256
 
       - name: Create Release
         env:
@@ -33,4 +39,4 @@ jobs:
             apk-distribution/app-debug.apk \
             apk-distribution/app-debug.apk.sha256 \
             --title "Debug APK Build $TAG" \
-            --notes "Automatically published debug APK."
+            --notes "Automatically built and published debug APK."
