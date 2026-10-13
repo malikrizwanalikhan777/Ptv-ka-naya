@@ -21,8 +21,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Decode Keystore
-        run: base64 -d debug.keystore.base64 > debug.keystore
+      - name: Generate Debug Keystore
+        run: |
+          keytool -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -keyalg RSA -keysize 2048 -validity 365
 
       - name: Build APK
         run: gradle :app:assembleDebug
