@@ -28,7 +28,10 @@ fun ChannelListScreen(viewModel: ChannelViewModel, onStreamClick: (String) -> Un
     Column(modifier = Modifier.fillMaxSize()) {
         // Header
         Row(
-            modifier = Modifier.fillMaxWidth().background(color = androidx.compose.ui.graphics.Color(0xFF87CEEB)).padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = androidx.compose.ui.graphics.Color(0xFF87CEEB))
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -71,22 +74,18 @@ fun ChannelListScreen(viewModel: ChannelViewModel, onStreamClick: (String) -> Un
                 modifier = Modifier.fillMaxWidth(0.9f).fillMaxHeight(0.8f),
                 shape = MaterialTheme.shapes.medium
             ) {
-                LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
-                    modifier = Modifier.fillMaxSize()
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(4),
+                    contentPadding = PaddingValues(16.dp)
                 ) {
-                    item { Text(text = "Select Stream", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 16.dp)) }
                     items(channel.streams) { stream ->
                         Button(
                             onClick = {
-                                // Close dialog, then navigate to player.
-                                // When player pops back, dialog state is preserved if managed correctly, 
-                                // but standard NavHost pops the player route.
                                 val url = stream.url
                                 selectedChannel = null 
                                 onStreamClick(url)
                             },
-                            modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth()
+                            modifier = Modifier.padding(8.dp).fillMaxWidth()
                         ) {
                             Text(text = stream.name)
                         }
