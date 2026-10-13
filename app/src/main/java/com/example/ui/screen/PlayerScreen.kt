@@ -21,14 +21,11 @@ import androidx.core.view.WindowInsetsControllerCompat
 @Composable
 fun PlayerScreen(url: String) {
     val view = LocalView.current
-    DisposableEffect(Unit) {
+    androidx.compose.runtime.LaunchedEffect(Unit) {
         val window = (view.context as Activity).window
         val controller = WindowCompat.getInsetsController(window, view)
         controller.hide(WindowInsetsCompat.Type.systemBars())
         controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        onDispose {
-            controller.show(WindowInsetsCompat.Type.systemBars())
-        }
     }
 
     AndroidView(
@@ -43,8 +40,8 @@ fun PlayerScreen(url: String) {
                 settings.domStorageEnabled = true
                 settings.mediaPlaybackRequiresUserGesture = false
                 
-                // Desktop mode for #ch=1
-                if (url.contains("#ch=1")) {
+                // Desktop mode for playerso/Rizzonewchannel
+                if (url.contains("playerso.top") || url.contains("Rizzonewchannel")) {
                     settings.userAgentString = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
                 } else {
                     settings.userAgentString = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"

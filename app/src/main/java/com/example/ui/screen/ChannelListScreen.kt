@@ -55,7 +55,7 @@ fun ChannelListScreen(viewModel: ChannelViewModel, onStreamClick: (String) -> Un
                         modifier = Modifier
                             .padding(4.dp)
                             .fillMaxWidth()
-                            .height(120.dp),
+                            .height(140.dp),
                         onClick = {
                             if (channel.streams.size == 1) {
                                 onStreamClick(channel.streams[0].url)
@@ -64,8 +64,14 @@ fun ChannelListScreen(viewModel: ChannelViewModel, onStreamClick: (String) -> Un
                             }
                         }
                     ) {
-                        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                            Text(text = channel.name, modifier = Modifier.padding(8.dp))
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(4.dp)) {
+                            coil.compose.AsyncImage(
+                                model = channel.image,
+                                contentDescription = channel.name,
+                                modifier = Modifier.weight(1f).fillMaxWidth(),
+                                contentScale = androidx.compose.ui.layout.ContentScale.Fit
+                            )
+                            Text(text = channel.name, modifier = Modifier.padding(4.dp), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                         }
                     }
                 }
