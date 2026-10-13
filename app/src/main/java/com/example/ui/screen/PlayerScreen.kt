@@ -40,8 +40,8 @@ fun PlayerScreen(url: String) {
                 settings.domStorageEnabled = true
                 settings.mediaPlaybackRequiresUserGesture = false
                 
-                // Desktop mode for playerso/Rizzonewchannel
-                if (url.contains("playerso.top") || url.contains("Rizzonewchannel")) {
+                // Desktop mode ONLY for playerso.top
+                if (url.contains("playerso.top")) {
                     settings.userAgentString = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
                 } else {
                     settings.userAgentString = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
