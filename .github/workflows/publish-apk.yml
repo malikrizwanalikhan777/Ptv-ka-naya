@@ -22,7 +22,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build APK
-        run: ./gradle :app:assembleDebug
+        run: gradle :app:assembleDebug
 
       - name: Prepare Distribution
         run: |
