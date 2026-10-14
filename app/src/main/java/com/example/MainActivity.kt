@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    com.example.ads.AdsManager.initialize(this)
     WindowCompat.setDecorFitsSystemWindows(window, false)
     val controller = WindowCompat.getInsetsController(window, window.decorView)
     controller.hide(WindowInsetsCompat.Type.systemBars())

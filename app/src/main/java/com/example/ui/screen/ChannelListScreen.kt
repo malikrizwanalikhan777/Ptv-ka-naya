@@ -15,7 +15,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
+import android.app.Activity
 import com.example.ui.viewmodel.ChannelViewModel
+import com.example.ads.AdsManager
+import com.example.ads.UnityBannerAd
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,6 +29,8 @@ fun ChannelListScreen(viewModel: ChannelViewModel, onStreamClick: (String) -> Un
     var selectedChannel by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<com.example.data.model.Channel?>(null) }
     val sheetState = rememberModalBottomSheetState()
 
+    val context = LocalContext.current as Activity
+    
     Column(modifier = Modifier.fillMaxSize()) {
         // Header
         Row(
@@ -40,43 +46,50 @@ fun ChannelListScreen(viewModel: ChannelViewModel, onStreamClick: (String) -> Un
             }
         }
 
-        if (isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(4),
-                contentPadding = PaddingValues(8.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(channels) { channel ->
-                    Card(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxWidth()
-                            .height(140.dp),
-                        onClick = {
-                            if (channel.streams.size == 1) {
-                                onStreamClick(channel.streams[0].url)
-                            } else {
-                                selectedChannel = channel
+        Box(modifier = Modifier.weight(1f)) {
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(4),
+                    contentPadding = PaddingValues(8.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(channels) { channel ->
+                        Card(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .fillMaxWidth()
+                                .height(140.dp),
+                            onClick = {
+                                if (channel.streams.size == 1) {
+                                    viewModel.incrementClickCounter()
+                                    val count = viewModel.clickCounter
+                                    if (count == 2 || count == 8) AdsManager.showInterstitial(context)
+                                    else if (count == 4) AdsManager.showRewarded(context)
+                                    onStreamClick(channel.streams[0].url)
+                                } else {
+                                    selectedChannel = channel
+                                }
                             }
-                        }
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(4.dp)) {
-                            coil.compose.AsyncImage(
-                                model = channel.image,
-                                contentDescription = channel.name,
-                                modifier = Modifier.weight(1f).fillMaxWidth(),
-                                contentScale = androidx.compose.ui.layout.ContentScale.Fit
-                            )
-                            Text(text = channel.name, modifier = Modifier.padding(4.dp), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(4.dp)) {
+                                coil.compose.AsyncImage(
+                                    model = channel.image,
+                                    contentDescription = channel.name,
+                                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                                    contentScale = androidx.compose.ui.layout.ContentScale.Fit
+                                )
+                                Text(text = channel.name, modifier = Modifier.padding(4.dp), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                            }
                         }
                     }
                 }
             }
         }
+        UnityBannerAd(modifier = Modifier.fillMaxWidth().height(50.dp))
     }
 
     selectedChannel?.let { channel ->
@@ -97,6 +110,10 @@ fun ChannelListScreen(viewModel: ChannelViewModel, onStreamClick: (String) -> Un
                         items(channel.streams) { stream ->
                             Button(
                                 onClick = {
+                                    viewModel.incrementClickCounter()
+                                    val count = viewModel.clickCounter
+                                    if (count == 2 || count == 8) AdsManager.showInterstitial(context)
+                                    else if (count == 4) AdsManager.showRewarded(context)
                                     selectedChannel = null 
                                     onStreamClick(stream.url)
                                 },

@@ -21,6 +21,13 @@ class ChannelViewModel : ViewModel() {
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
+    private var _clickCounter = 0
+    val clickCounter: Int get() = _clickCounter
+
+    fun incrementClickCounter() {
+        _clickCounter++
+    }
+
     init {
         fetchChannels()
     }

@@ -13,10 +13,10 @@ android {
   compileSdk { version = release(36) { minorApiLevel = 1 } }
 
   defaultConfig {
-    applicationId = "com.aistudio.ptvsports.xyzabc"
+    applicationId = "watch.tensportslive"
     minSdk = 24
     targetSdk = 36
-    versionCode = 1
+    versionCode = 22
     versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -140,4 +140,5 @@ dependencies {
   debugImplementation(libs.androidx.compose.ui.tooling)
   "ksp"(libs.androidx.room.compiler)
   "ksp"(libs.moshi.kotlin.codegen)
+  implementation("com.unity3d.ads:unity-ads:4.12.3")
 }
